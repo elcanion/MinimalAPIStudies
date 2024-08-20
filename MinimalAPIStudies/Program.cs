@@ -5,6 +5,7 @@ using MinimalAPIStudies.Interfaces;
 using MinimalAPIStudies.Models;
 using MinimalAPIStudies.Routes;
 using MinimalAPIStudies.Services;
+using System.Net;
 // Configure services
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IHelloService, HelloService>();
@@ -36,6 +37,16 @@ app.MapPut("/Addresses/{addressId}", ([FromRoute] int addressId, [FromForm] Addr
 {
     return Results.NoContent();
 }).DisableAntiforgery();
+app.MapPost("/countries", ([FromBody] Country country, IValidator<Country> ValidatorConfiguration) =>
+{
+    var validationResult = ValidatorConfiguration.Validate(country);
+    if (validationResult.IsValid)
+    {
+        // Do something
+        return Results.Created();
+    }
+    return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: (int)HttpStatusCode.BadRequest);
+});
 
 app.Run();
 
