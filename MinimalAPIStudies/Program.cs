@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MinimalAPIStudies.Interfaces;
+using MinimalAPIStudies.Models;
 using MinimalAPIStudies.Routes;
 using MinimalAPIStudies.Services;
 // Configure services
@@ -24,6 +25,15 @@ app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 
 app.MapGroup("/hello").GroupHellos();
+
+app.MapPost("/Addresses", ([FromBody] Address address) =>
+{
+    return Results.Created();
+});
+app.MapPut("/Addresses/{addressId}", ([FromRoute] int addressId, [FromForm] Address address) =>
+{
+    return Results.NoContent();
+}).DisableAntiforgery();
 
 app.Run();
 

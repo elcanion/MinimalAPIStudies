@@ -7,10 +7,28 @@ namespace MinimalAPIStudies.Routes
     {
         public static RouteGroupBuilder GroupHellos(this RouteGroupBuilder group)
         {
-            group.MapGet("/{name}", ([FromRoute] string name, IHelloService service) => service.Hello(name));
-            group.MapGet("/date/{date}", (DateTime date) => date.ToString());
-            group.MapGet("/uniqueidentifier/{id}", (Guid id) => id.ToString());
 
+            var countries = new string[]
+            {
+                "France",
+                "Canada",
+                "USA"
+            };
+
+            var languages = new Dictionary<string, List<string>>()
+            {
+                { "France", new List<string> { "french" } },
+                { "Canada", new List<string> { "french", "english"} },
+                { "USA" , new List<string> { "english", "spanish" } }
+            };
+
+            group.MapGet("/", () => countries);
+            group.MapGet("/{id}", (int id) => countries[id]);
+            group.MapGet("/{id}/languages", (int id) =>
+            {
+                var country = countries[id];
+                return languages[country];
+            });
             return group;
         }
     }
