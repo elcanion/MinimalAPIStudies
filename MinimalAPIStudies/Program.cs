@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MinimalAPIStudies.Interfaces;
@@ -8,6 +9,7 @@ using MinimalAPIStudies.Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IHelloService, HelloService>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
