@@ -30,7 +30,7 @@ namespace MinimalAPIStudies.Validators
             RuleFor(x => x.FlagUri)
             .NotEmpty()
             .WithMessage("{PropertyName} is required")
-            .Matches("^(https:\\/\\/.)[-a-zA-Z0-9@:%._\\+~#=]2,256}\\.[a-z]{ 2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)$")
+            .Matches("^(https:\\/\\/.)[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)$")
             .WithMessage("{PropertyName} must match an HTTPS URL");
         }
     }
