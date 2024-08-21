@@ -2,6 +2,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MinimalAPIStudies.Interfaces;
+using MinimalAPIStudies.Mapping;
+using MinimalAPIStudies.Mapping.Interfaces;
 using MinimalAPIStudies.Models;
 using MinimalAPIStudies.Routes;
 using MinimalAPIStudies.Services;
@@ -11,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IHelloService, HelloService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddScoped<ICountryMapper, CountryMapper>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -37,15 +40,17 @@ app.MapPut("/Addresses/{addressId}", ([FromRoute] int addressId, [FromForm] Addr
 {
     return Results.NoContent();
 }).DisableAntiforgery();
-app.MapPost("/countries", ([FromBody] Country country, IValidator<Country> ValidatorConfiguration) =>
+app.MapPost("/countries", ([FromBody] Country country, IValidator<Country> validator, ICountryMapper mapper) =>
 {
-    var validationResult = ValidatorConfiguration.Validate(country);
+    var validationResult = validator.Validate(country);
     if (validationResult.IsValid)
     {
-        // Do something
+        var countryDTO = mapper.Map(country);
+
+        // Do some work here
         return Results.Created();
     }
-    return Results.ValidationProblem(validationResult.ToDictionary(), statusCode: (int)HttpStatusCode.BadRequest);
+    return Results.ValidationProblem(validationResult.ToDictionary());
 });
 
 app.Run();

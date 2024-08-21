@@ -1,9 +1,10 @@
 ﻿using Domain.DTOs;
+using MinimalAPIStudies.Mapping.Interfaces;
 using MinimalAPIStudies.Models;
 
 namespace MinimalAPIStudies.Mapping
 {
-    public class CountryMapper
+    public class CountryMapper : ICountryMapper
     {
         public CountryDTO? Map(Country country)
         {
