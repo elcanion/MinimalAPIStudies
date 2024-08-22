@@ -2,6 +2,7 @@ using Domain.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using MinimalAPIStudies.Endpoints;
 using MinimalAPIStudies.Interfaces;
 using MinimalAPIStudies.Mapping;
 using MinimalAPIStudies.Mapping.Interfaces;
@@ -41,101 +42,13 @@ app.MapPut("/Addresses/{addressId}", ([FromRoute] int addressId, [FromForm] Addr
 {
     return Results.NoContent();
 }).DisableAntiforgery();
-app.MapPost("/countries", ([FromBody] Country country, IValidator<Country> validator, ICountryMapper mapper) =>
-{
-    var validationResult = validator.Validate(country);
-    if (validationResult.IsValid)
-    {
-        var countryDTO = mapper.Map(country);
 
-        // Do some work here
-        return Results.Created();
-    }
-    return Results.ValidationProblem(validationResult.ToDictionary());
-});
 
-// Create
-app.MapPost("/countries", (
-        [FromBody] Country country,
-        IValidator<Country> ValidatorConfiguration,
-        ICountryMapper mapper,
-        ICountryService countryService) =>
-        {
-            var validationResult = ValidatorConfiguration.Validate(country);
-            if (validationResult.IsValid)
-            {
-                var countryDTO = mapper.Map(country);
-                return Results.CreatedAtRoute(
-                        "countryById",
-                        new
-                        {
-                            Id = countryService.CreateOrUpdate(countryDTO)
-                        }
-                    );
-            }
-            return Results.ValidationProblem(
-                validationResult.ToDictionary()
-                );
-        });
-
-// Update
-app.MapPut("/countries", (
-    [FromBody] Country country,
-    IValidator<Country> validator,
-    ICountryMapper mapper,
-    ICountryService countryService) =>
-    {
-    var validationResult = validator.Validate(country);
-
-    if (validationResult.IsValid)
-    {
-            if (country.Id is null)
-            {
-                return Results.CreatedAtRoute(
-                    "countryById",
-                    new
-                    {
-                        Id = countryService.CreateOrUpdate(mapper.Map(country))
-                    });
-            }
-            return Results.NoContent();
-        }
-        return Results.ValidationProblem(
-            validationResult.ToDictionary()
-        );
-    });
-
-// Delete
-app.MapDelete("/countries/{id}", (
-        int id,
-        ICountryService countryService) => {
-    if (countryService.Delete(id))
-        return Results.NoContent();
-
-    return Results.NotFound();
-});
-
-// Retrieve
-app.MapGet("/countries/{id}", (
-        int id, ICountryMapper mapper,
-        ICountryService countryService) =>
-{
-    var country = countryService.Retrieve(id);
-
-    if (country is null)
-        return Results.NotFound();
-
-    return Results.Ok(country);
-}).WithName("countryById");
-
-// Retrieve
-app.MapGet("/countries", (
-        ICountryMapper mapper,
-        ICountryService countryService) =>
-{
-    var countries = countryService.GetAll();
-    return Results.Ok(countries);
-});
+app.MapPost("/countries", CountryEndpoints.PostCountry);
+app.MapPut("/countries", CountryEndpoints.PutCountry);
+app.MapDelete("/countries/{id}", CountryEndpoints.DeleteCountry);
+app.MapGet("/countries/{id}", CountryEndpoints.GetCountry).WithName("countryById");
+app.MapGet("/countries", CountryEndpoints.GetCountries);
 
 app.Run();
 
