@@ -43,12 +43,7 @@ app.MapPut("/Addresses/{addressId}", ([FromRoute] int addressId, [FromForm] Addr
     return Results.NoContent();
 }).DisableAntiforgery();
 
-
-app.MapPost("/countries", CountryEndpoints.PostCountry);
-app.MapPut("/countries", CountryEndpoints.PutCountry);
-app.MapDelete("/countries/{id}", CountryEndpoints.DeleteCountry);
-app.MapGet("/countries/{id}", CountryEndpoints.GetCountry).WithName("countryById");
-app.MapGet("/countries", CountryEndpoints.GetCountries);
+app.AddCountryEndpoints();
 
 app.Run();
 
