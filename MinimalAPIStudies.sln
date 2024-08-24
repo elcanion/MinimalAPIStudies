@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalAPIStudies", "MinimalAPIStudies\MinimalAPIStudies.csproj", "{A351C227-0B28-451D-BDBD-8FAAC99537E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MinimalAPIStudies", "MinimalAPIStudies\MinimalAPIStudies.csproj", "{A351C227-0B28-451D-BDBD-8FAAC99537E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{1EF4401F-9728-46C7-8A0C-42F9C51DA98C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{1EF4401F-9728-46C7-8A0C-42F9C51DA98C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Insfrastructure.SQL", "Insfrastructure.SQL\Insfrastructure.SQL.csproj", "{A4180DF3-91A1-46F6-89E3-9140A2202AC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1EF4401F-9728-46C7-8A0C-42F9C51DA98C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EF4401F-9728-46C7-8A0C-42F9C51DA98C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EF4401F-9728-46C7-8A0C-42F9C51DA98C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4180DF3-91A1-46F6-89E3-9140A2202AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4180DF3-91A1-46F6-89E3-9140A2202AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4180DF3-91A1-46F6-89E3-9140A2202AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4180DF3-91A1-46F6-89E3-9140A2202AC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 using Domain.Services;
 using FluentValidation;
+using Insfrastructure.SQL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using MinimalAPIStudies.Endpoints;
@@ -11,8 +12,10 @@ using MinimalAPIStudies.Routes;
 using MinimalAPIStudies.Services;
 using System.Net;
 using System.Threading.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 // Configure services
 var builder = WebApplication.CreateBuilder(args);
+var dbConnection = builder.Configuration.GetConnectionString("DemoDb");
 builder.Services.AddRateLimiter(options => 
 {
     options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
@@ -38,6 +41,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
 });
+builder.Services.AddDbContextPool<DemoContext>(options => options.UseSqlServer(dbConnection));
 
 // Configure and enable middlewares
 var app = builder.Build();
@@ -45,6 +49,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DemoContext>();
+    db.Database.SetConnectionString(dbConnection);
+    db.Database.Migrate();
 }
 
 app.UseSwagger();
