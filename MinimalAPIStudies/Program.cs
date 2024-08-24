@@ -9,8 +9,26 @@ using MinimalAPIStudies.Mapping.Interfaces;
 using MinimalAPIStudies.Models;
 using MinimalAPIStudies.Routes;
 using MinimalAPIStudies.Services;
+using System.Net;
+using System.Threading.RateLimiting;
 // Configure services
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRateLimiter(options => 
+{
+    options.RejectionStatusCode = (int)HttpStatusCode.TooManyRequests;
+    options.OnRejected = async (context, token) =>
+    {
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.");
+    };
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext => RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress.ToString(),
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                QueueLimit = 10,
+                PermitLimit = 50,
+                Window = TimeSpan.FromSeconds(15)
+            }));
+});
 builder.Services.AddScoped<IHelloService, HelloService>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddEndpointsApiExplorer();
@@ -44,6 +62,7 @@ app.MapPut("/Addresses/{addressId}", ([FromRoute] int addressId, [FromForm] Addr
 }).DisableAntiforgery();
 
 app.AddCountryEndpoints();
+app.UseRateLimiter();
 
 app.Run();
 
